@@ -32,6 +32,7 @@ Here are some of the documents from Apple that informed the style guide. If some
 * [Image Naming](#image-naming)
 * [Booleans](#booleans)
 * [Singletons](#singletons)
+* [Xibs](#xibs)
 * [Xcode Project](#xcode-project)
 
 ## Dot-Notation Syntax
@@ -47,7 +48,16 @@ Dot-notation should **never** be used for for any reason. Bracket notation is pr
 ## Spacing
 
 * Indent using 4 spaces. Never indent with tabs. Be sure to set this preference in Xcode.
-* Method braces and other braces (`if`/`else`/`switch`/`while` etc.) always open on the same line as the statement but close on a new line.
+* Method braces should open and close on new lines. 
+
+**For example:**
+```objc
+- (void)foo
+{
+// Do something
+}
+```
+* All other braces (`if`/`else`/`switch`/`while` etc.) always open on the same line as the statement but close on a new line.
 
 **For example:**
 ```objc
@@ -398,6 +408,10 @@ Singleton objects should use a thread-safe pattern for creating their shared ins
 }
 ```
 This will prevent [possible and sometimes prolific crashes](http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html).
+
+## Xibs
+
+Xibs should not be used to create UI. All view creation and layout should be done in code using AutoLayout or manually setting frames and Autoresizing masks. Avoiding Xibs reduces bundle size and improves clarity by confining layout to one place.
 
 ## Xcode project
 
