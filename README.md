@@ -63,8 +63,7 @@ Dot-notation should **never** be used for for any reason. Bracket notation is pr
 ```objc
 if (user.isHappy) {
 //Do something
-}
-else {
+} else {
 //Do something else
 }
 ```
@@ -145,14 +144,15 @@ Variables should be named as descriptively as possible. Single letter variable n
 
 Asterisks indicating pointers belong with the variable, e.g., `NSString *text` not `NSString* text` or `NSString * text`, except in the case of constants.
 
-Property definitions should be used in place of naked instance variables whenever possible. 
+Property definitions should be used in place of naked instance variables whenever possible. Property definitions should always contain both the specifier for atomicity as well as storage. 
 
 **For example:**
 
 ```objc
 @interface AFSection: NSObject
 
-@property (nonatomic) NSString *headline;
+@property (nonatomic, strong) NSString *headline;
+@property (nonatomic, assign) NSInteger lineCount;
 
 @end
 ```
@@ -161,7 +161,8 @@ Property definitions should be used in place of naked instance variables wheneve
 
 ```objc
 @interface AFSection : NSObject {
-    NSString *headline;
+    NSString *_headline;
+    NSInteger _lineCount;
 }
 ```
 
@@ -183,7 +184,7 @@ UIButton *settingsButton;
 UIButton *setBut;
 ```
 
-The two letter prefix `AF` should always be used for class names and constants, however may be omitted for Core Data entity names. Constants should be camel-case with all words capitalized, prefixed by a lowercase `k` and include the related class name for clarity.
+The three letter prefix `AVY` should always be used for class names and constants, however may be omitted for Core Data entity names. Constants should be camel-case with all words capitalized, prefixed by a lowercase `k` and include the related class name for clarity.
 
 **For example:**
 
@@ -268,7 +269,7 @@ When accessing the `x`, `y`, `width`, or `height` of a `CGRect`, always use the 
 **For example:**
 
 ```objc
-CGRect frame = self.view.frame;
+CGRect frame = [[[self view] frame];
 
 CGFloat x = CGRectGetMinX(frame);
 CGFloat y = CGRectGetMinY(frame);
@@ -279,7 +280,7 @@ CGFloat height = CGRectGetHeight(frame);
 **Not:**
 
 ```objc
-CGRect frame = self.view.frame;
+CGRect frame = [[[self view] frame];
 
 CGFloat x = frame.origin.x;
 CGFloat y = frame.origin.y;
@@ -294,15 +295,15 @@ Constants are preferred over in-line string literals or numbers, as they allow f
 **For example:**
 
 ```objc
-static NSString * const NYTAboutViewControllerCompanyName = @"The New York Times Company";
+static NSString *const AVYAboutViewControllerCompanyName = @"Aviary";
 
-static const CGFloat NYTImageThumbnailHeight = 50.0;
+static const CGFloat AVYImageThumbnailHeight = 50.0;
 ```
 
 **Not:**
 
 ```objc
-#define CompanyName @"The New York Times Company"
+#define CompanyName @"Aviary"
 
 #define thumbnailHeight 2
 ```
@@ -314,24 +315,22 @@ When using `enum`s, it is recommended to use the new fixed underlying type speci
 **Example:**
 
 ```objc
-typedef NS_ENUM(NSInteger, NYTAdRequestState) {
-    NYTAdRequestStateInactive,
-    NYTAdRequestStateLoading
+typedef NS_ENUM(NSInteger, AVYRequestState) {
+    AVYRequestStateInactive,
+    AVYRequestStateLoading
 };
 ```
 
 ## Private Properties
 
-Private properties should be declared in class extensions (anonymous categories) in the implementation file of a class. Named categories (such as `NYTPrivate` or `private`) should never be used unless extending another class.
+Private properties should be declared in class extensions (anonymous categories) in the implementation file of a class. Named categories (such as `AVYPrivate` or `private`) should never be used unless extending another class.
 
 **For example:**
 
 ```objc
-@interface NYTAdvertisement ()
+@interface AVYProcessor ()
 
-@property (nonatomic, strong) GADBannerView *googleAdView;
-@property (nonatomic, strong) ADBannerView *iAdView;
-@property (nonatomic, strong) UIWebView *adXWebView;
+@property (nonatomic, assign) CGSize outputSize;
 
 @end
 ```
@@ -396,7 +395,8 @@ Text and example taken from the [Cocoa Naming Guidelines](https://developer.appl
 
 Singleton objects should use a thread-safe pattern for creating their shared instance.
 ```objc
-+ (instancetype)sharedInstance {
++ (instancetype)sharedInstance 
+{
    static id sharedInstance = nil;
 
    static dispatch_once_t onceToken;
